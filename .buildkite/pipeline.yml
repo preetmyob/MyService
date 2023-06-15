@@ -1,0 +1,67 @@
+agents:
+  queue: enterprise-scaling-test
+  
+env:
+  PATH : /var/lib/buildkite-agent/.dotnet:$PATH
+
+commands:
+  - export PATH=/var/lib/buildkite-agent/.dotnet:$PATH
+  - chmod u+x .buildkite/scripts/*.sh
+
+steps:
+  - label: ':bar_chart: Run Unit Test Coverage'
+    commands:
+      - echo "--- Install dotnet via CLI"
+      - .buildkite/scripts/download-install-dotnet.sh
+      - .buildkite/scripts/run-test-coverage-check.sh
+    agents:
+      queue: enterprise-scaling-test
+
+  - block: 'Deploy to AWS'
+
+  - label: ':rocket: Build and publish backgroundprocesser image'
+    commands:
+      - .buildkite/scripts/publish.sh
+    env:
+      BRANCH: ${BUILDKITE_BRANCH}
+      BUILD_NUMBER: ${BUILDKITE_BUILD_NUMBER}
+    agents:
+      queue: enterprise-scaling-test  
+
+  - label: ':dotnet::aws-lambda: Install aws dotnet tools'
+    commands: 
+      - .buildkite/scripts/download-install-dotnet.sh
+      - .buildkite/scripts/download-install-lambda-tools.sh
+    soft_fail:
+      - exit_status: 1
+    agents:
+      queue: enterprise-scaling-test
+    branches: "main"
+  
+  - wait
+    
+  - label: ':dotnet::aws-lambda: Run db migration'
+    commands:
+      - .buildkite/scripts/run-db-migration.sh test
+    agents:
+      queue: enterprise-scaling-test
+    branches: "main"
+
+  - wait
+
+  - label: ':aws-lambda: Deploy service to aws lambda'
+    commands:
+      - .buildkite/scripts/deploy-lambda.sh
+    agents:
+      queue: enterprise-scaling-test
+    branches: "main"
+      
+  - wait
+  
+  - label: ':amazon-apigateway: Deploy Endpoint to API Gateway'
+    commands:
+      - /bin/bash -c "chmod u+x .buildkite/scripts/deploy-endpoint-api-gateway.sh"
+      - .buildkite/scripts/deploy-endpoint-api-gateway.sh
+    agents:
+      queue: enterprise-scaling-test
+    branches: "main"

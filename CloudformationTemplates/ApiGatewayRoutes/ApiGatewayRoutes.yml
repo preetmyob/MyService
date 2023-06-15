@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: |
+  Template for deploying Endpoints to AWS API Gateway service. 
+  Required Parameters:
+    APIGateway Id
+    Integration Id
+
+Parameters:
+  APIGatewayId:
+    Default: $default
+    Type: String
+
+  IntegrationId:
+    Default: $default
+    Type: String
+
+Resources:
+  MyServiceGet:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref APIGatewayId
+      AuthorizationType: AWS_IAM
+      RouteKey: GET /api/v1/getweatherforecast
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref IntegrationId  
+  
+  HealthGet:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref APIGatewayId
+      AuthorizationType: AWS_IAM
+      RouteKey: GET /api/v1/health
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref IntegrationId  
