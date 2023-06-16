@@ -3,6 +3,9 @@
 # installing the template
 dotnet new install <path to template root>
 
+# updating the template
+dotnet new update <path to template root>
+
 # uninstalling the template
 dotnet new uninstall <path to template root>
 
@@ -10,7 +13,7 @@ dotnet new uninstall <path to template root>
 dotnet new myobentsvc -o <name of your service>
 ```
 # Service (template output operations)
-## Step 1 Source Control in Git
+## Source Control in Git
 
 ```bash
 
@@ -28,7 +31,7 @@ git branch -M main
 #        git push -u origin main
  ```
 
-## Step 2 Build Pipeline
+## Setting up a Buildkite pipeline
 
 
 See https://github.com/MYOB-Technology/myob-auth to set up myob-auth
@@ -43,9 +46,9 @@ See https://github.com/myob-ops/pipe/releases to install the pipe command
 # To find out your queue and team names you can run:
 pipe ls -teams
 pipe ls -queues
-
-# see https://system-catalogue.myob.com/docs/default/system/buildkite/create-pipeline/#make-a-pipeline for more info
-
+```
+See https://system-catalogue.myob.com/docs/default/system/buildkite/create-pipeline/#make-a-pipeline for more info
+```bash
 # Make a pipeline - with your exisitng buildkite.yml file:
 pipe mk -t advanced-platform MyService queue=enterprise-platform-dev
 ```

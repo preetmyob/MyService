@@ -13,13 +13,14 @@ steps:
     commands:
       - echo "--- Install dotnet via CLI"
       - .buildkite/scripts/download-install-dotnet.sh
+      - .buildkite/scripts/run-gitversion.sh
       - .buildkite/scripts/run-test-coverage-check.sh
     agents:
       queue: enterprise-scaling-test
 
   - block: 'Deploy to AWS'
 
-  - label: ':rocket: Build and publish backgroundprocesser image'
+  - label: ':rocket: Build and publish MyService docker image'
     commands:
       - .buildkite/scripts/publish.sh
     env:
@@ -28,15 +29,6 @@ steps:
     agents:
       queue: enterprise-scaling-test  
 
-  - label: ':dotnet::aws-lambda: Install aws dotnet tools'
-    commands: 
-      - .buildkite/scripts/download-install-dotnet.sh
-      - .buildkite/scripts/download-install-lambda-tools.sh
-    soft_fail:
-      - exit_status: 1
-    agents:
-      queue: enterprise-scaling-test
-    branches: "main"
   
   - wait
     
