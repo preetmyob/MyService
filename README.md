@@ -18,40 +18,35 @@ dotnet new myobentsvc -o <name of your service>
 
 git init
 git add * .*
-git commit -m "initial commit of MyService"
+git commit -m "initial commit of enterprise platform MyService"
+git branch -M main
 
-# Create a remote repo (e.g. using gh the GitHub CLI)
-# in this case my github user is preetmyob
-remoteRepo=
-gh repo create  MYOBTechnology/MyService --public
-
-# set the remote using HTTPS. N.B. SSH details tbd
-git remote add origin https://github.com/MYOBTechnology/MyService
-git push --set-upstream origin main
-
+# Create a remote repo e.g. MYOB-Technology/enterprise-platform-MyService
+# set git remote and push
+# e.g 
+#        git remote add origin https://github.com:MYOB-Technology/enterprise-platform-MyService.git
+#        git push -u origin main
  ```
 
 ## Step 2 Build Pipeline
 
-*Follow the instructions on [Github | myob-auth](https://github.com/MYOB-Technology/myob-auth) to set up myobauth*
 
-
-These instructions were adapted from [Buildkite System Catalog | Make a Pipeline](https://system-catalogue.myob.com/docs/default/system/buildkite/create-pipeline/#make-a-pipeline), and you are encouraged to confirm that these are the latest steps
-
+See https://github.com/MYOB-Technology/myob-auth to set up myob-auth
 ```bash
 
-# Auth to target AWS account:
-myob-auth login --username preet.sangha@myob.com --profile default --role $adfs-enterprise-scaling-test-admin                              
+# Auth to target AWS account (e.g. adfs-enterprise-scaling-test-admin)
+myob-auth login --username firstname.lastname@myob.com --profile default --role <aws account name>                              
+```
 
-# To find out your queue and team slugs run:
+See https://github.com/myob-ops/pipe/releases to install the pipe command
+```bash
+# To find out your queue and team names you can run:
 pipe ls -teams
 pipe ls -queues
 
+# see https://system-catalogue.myob.com/docs/default/system/buildkite/create-pipeline/#make-a-pipeline for more info
 
 # Make a pipeline - with your exisitng buildkite.yml file:
 pipe mk -t advanced-platform MyService queue=enterprise-platform-dev
-
-# check your queue
-pipe ls -queues
 ```
 
