@@ -50,6 +50,6 @@ pipe ls -queues
 See https://system-catalogue.myob.com/docs/default/system/buildkite/create-pipeline/#make-a-pipeline for more info
 ```bash
 # Make a pipeline - with your exisitng buildkite.yml file:
-pipe mk -t advanced-platform MyService queue=enterprise-platform-dev
+pipe mk -t advanced-platform enterprise-platform-MyService queue=enterprise-platform-dev
 ```
 
